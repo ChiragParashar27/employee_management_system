@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Container Styling */
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            margin: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        /* Buttons Styling */
+        .options a {
+            display: inline-block;
+            background-color: #0072ff;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 114, 255, 0.3);
+        }
+
+        .options a:hover {
+            background-color: #005bb5;
+            transform: translateY(-3px);
+        }
+
+        .options a:active {
+            transform: translateY(1px);
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Welcome to the Employee Management System</h1>
+        <p>Select an option below to get started:</p>
+
+        <div class="options">
+            <a href="register.html">Employee Registration</a>
+            <a href="register.html">Check Registration Status</a>
+            <a href="login.html">Login to Dashboard</a>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2024 Employee Management System. All Rights Reserved by Chirag Parashar.
+    </footer>
+
+</body>
+</html>

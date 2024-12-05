@@ -1,0 +1,60 @@
+-- Step 1: Create the database
+CREATE DATABASE employee_management;
+
+-- Step 2: Use the created database
+USE employee_management;
+
+-- Step 3: Create employees table
+CREATE TABLE employees (
+    employee_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phone VARCHAR(15),
+    department VARCHAR(50),
+    position VARCHAR(50),
+    hire_date DATE,
+    status ENUM('pending', 'approved') DEFAULT 'pending'
+);
+
+-- Step 4: Create hr table
+CREATE TABLE hr (
+    hr_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- Step 5: Create login table
+CREATE TABLE login (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('employee', 'hr') NOT NULL,
+    employee_id INT,
+    hr_id INT,
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id),
+    FOREIGN KEY (hr_id) REFERENCES hr(hr_id)
+);
+
+-- Step 6: Create assigned_work table
+CREATE TABLE assigned_work (
+    work_id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id INT NOT NULL,
+    task_description TEXT,
+    due_date DATE,
+    status ENUM('assigned', 'in_progress', 'completed') DEFAULT 'assigned',
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
+
+-- Step 7: Create salary table
+CREATE TABLE salary (
+    salary_id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id INT NOT NULL,
+    base_salary DECIMAL(10, 2) NOT NULL,
+    bonuses DECIMAL(10, 2) DEFAULT 0.00,
+    deductions DECIMAL(10, 2) DEFAULT 0.00,
+    total_salary DECIMAL(10, 2) AS (base_salary + bonuses - deductions),
+    payment_date DATE,
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);

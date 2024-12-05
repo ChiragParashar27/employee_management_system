@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color:linear-gradient(to right, #4facfe, #00f2fe);
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #3498db; /* Changed to a common login page color */
+            padding: 10px;
+            color: white;
+            text-align: center;
+        }
+        .navbar h1 {
+            margin: 0;
+        }
+        .container {
+            margin: 20px;
+        }
+        .box {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .box h2 {
+            margin-top: 0;
+        }
+        .button {
+            background-color: #3498db; /* Changed to a common login page color */
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .button:hover {
+            background-color: #2980b9; /* Changed to a darker shade of the common login page color */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db; /* Changed to a common login page color */
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <h1>HR Dashboard</h1>
+    </div>
+
+    <!-- Rest of the code remains the same -->
+
+    <div class="container">
+        
+        <!-- Section to see currently logged-in employees -->
+        <div class="box">
+            <h2>Currently Logged-in Employees</h2>
+            <table id="loggedInEmployeesTable">
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be populated dynamically via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section to assign tasks to employees -->
+        <div class="box">
+            <h2>Assign Tasks</h2>
+            <form action="AssignTaskServlet" method="post">
+                <label for="employeeId">Employee ID:</label>
+                <input type="text" id="employeeId" name="employee_id" required><br><br>
+                
+                <label for="task_description">Assign Task:</label>
+                <input type="text" id="task_description" name="task_description" required><br><br>
+                
+                <label for="due_date">Due Date:</label>
+                <input type="date" id="due_date" name="due_date" required><br><br>
+                
+                <input type="submit" value="Assign Task" class="button">
+            </form>
+        </div>
+
+        <!-- Section to view all assigned tasks -->
+        <div class="box">
+            <h2>All Assigned Tasks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Employee Name</th>
+                        <th>Task ID</th>
+                        <th>Task Description</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tasks-table-body">
+                    <!-- Assigned tasks will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+       
+
+        <!-- Section to approve employees -->
+        <div class="box">
+            <h2>Approve Employee</h2>
+            <form action="ApproveEmployeeServlet" method="post">
+                <label for="employee_id">Employee ID:</label>
+                <input type="text" id="employee_id" name="employee_id" required><br><br>
+                
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required><br><br>
+                
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required><br><br>
+                
+                <input type="submit" value="Approve Employee" class="button">
+            </form>
+
+            <!-- Table to display unapproved employees -->
+            <h3>Unapproved Employees</h3>
+            <table id="unapprovedEmployeesTable">
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Unapproved employees will be populated dynamically -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section to view all employees -->
+        <div class="box">
+            <h2>Employee List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        
+                    </tr>
+                </thead>
+                <tbody id="employee-list-body">
+                    <!-- Rows will be populated dynamically -->
+                </tbody>
+            </table>
+        </div>
+                        <!-- Logout Button -->
+        <div class="logout">
+            <form action="LogoutServlet" method="get">
+                <input type="submit" value="Logout" class="button">
+            </form>
+        </div>
+                
+    </div>
+
+    <script>
+        // Function to fetch and display logged-in employees
+        function fetchLoggedInEmployees() {
+            fetch('LoggedInEmployeesServlet')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector("#loggedInEmployeesTable tbody");
+                    tableBody.innerHTML = ''; // Clear existing rows
+                    
+                    data.forEach(employee => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${employee.employee_id}</td>
+                            <td>${employee.first_name}</td>
+                            <td>${employee.last_name}</td>
+                            <td>${employee.login_status}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching logged-in employees:', error));
+        }
+
+        // Function to fetch and display all assigned tasks
+        function fetchViewAllAssignedTasks() {
+            fetch('ViewAllAssignedTasks')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('tasks-table-body');
+                    tableBody.innerHTML = ''; // Clear existing rows
+                    
+                    data.forEach(task => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${task.employeeId}</td>
+                            <td>${task.employeeName}</td>
+                            <td>${task.taskId}</td>
+                            <td>${task.taskDescription}</td>
+                            <td>${task.status}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching tasks:', error));
+        }
+
+        // Function to fetch and display unapproved employees
+        function fetchUnapprovedEmployees() {
+            fetch('UnapprovedEmployeesServlet') // Ensure you have the correct servlet for fetching unapproved employees
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector("#unapprovedEmployeesTable tbody");
+                    tableBody.innerHTML = ''; // Clear existing rows
+                    
+                    data.forEach(employee => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${employee.employee_id}</td>
+                            <td>${employee.first_name}</td>
+                            <td>${employee.last_name}</td>
+                            <td>${employee.status}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching unapproved employees:', error));
+        }
+
+        // Function to fetch employee data and populate the employee list table
+      function fetchEmployeeList() {
+    fetch('EmployeeListServlet')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const tableBody = document.querySelector("#employee-list-body");
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            data.forEach(employee => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${employee.employee_id}</td>
+                    <td>${employee.first_name}</td>
+                    <td>${employee.last_name}</td>
+                    <td>${employee.email}</td>
+                    <td>${employee.department}</td>
+                    <td><button onclick="editEmployee(${employee.employee_id})">Edit</button></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error fetching employee list:', error));
+}
+
+
+        // Function to fetch data on page load
+        window.onload = function() {
+            fetchLoggedInEmployees();
+            fetchViewAllAssignedTasks();
+            fetchUnapprovedEmployees();
+            fetchEmployeeList();
+        };
+
+        // Example function to edit an employee
+        function editEmployee(employeeId) {
+            alert("Edit functionality for Employee ID: " + employeeId);
+            // Implement redirect to an edit page or show a modal to edit employee details
+        }
+    </script>
+       
+</body>
+</html>
